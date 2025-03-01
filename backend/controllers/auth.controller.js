@@ -77,7 +77,30 @@ const verifyEmail = async (req,res)=> {
 }
 
 const login = async (req,res)=>{
-    res.send("login")
+    const {email, password} = req.body;
+
+    try{
+        const user = await User.findOne({email});
+    if(!user){
+        res.status(400).json({success:false, message: "User not found"})
+    }
+    const passwordCheck = await bcrypt.compare(password,user.password); 
+    if(!passwordCheck){
+        return res.status(401).json({success: false, message: "Invalid password"});
+    }
+    generateTokenAndSetCookie(res,user._id);
+
+    user.lastLogin = Date();
+    await user.save();
+    res.status(200).json({success: true, message: "Success Login", user: {
+        ...user._doc,
+        password: undefined,
+    }})
+
+    }catch(err){
+        console.error("There was an issue in login");
+        res.status(400).json({success: false, message: err.message})
+    }
 }
 
 const logout = async (req,res)=>{
