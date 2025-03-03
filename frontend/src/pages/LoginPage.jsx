@@ -11,7 +11,7 @@ const LoginPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors,setErrors] = useState("");
-	const [login,{isLoading}] = useLoginMutation()
+	const [login,{isLoading}] = useLoginMutation();
 	const navigate = useNavigate()
 
 	const handleLogin = async (e) => {
@@ -21,10 +21,10 @@ const LoginPage = () => {
 			password
 		}
 		const result = await login(logUser);
-
-		if (result.error) {
-			setErrors(result.error.data.error);
-			return; 
+		console.log(result)
+		if(result.error){
+			setErrors(result.error.data.message);
+			return;
 		}
 		navigate("/");
 	};

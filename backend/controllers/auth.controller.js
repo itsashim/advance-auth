@@ -43,7 +43,7 @@ const signup = async (req,res)=>{
 
         await sendVerificationCode(user.email,verificationCode)
 
-        res.status(201).json({success: "true",message: "User created Successfully" , user: {
+        return res.status(201).json({success: "true",message: "User created Successfully" , user: {
             ...user._doc, //spreading user 
             password: undefined // setting password to null inorder to prevent from client getting password
         }
@@ -73,7 +73,7 @@ const verifyEmail = async (req,res)=> {
 
     // Send Welcome Email
     await sendWelcomeEmail(user.email)
-    res.status(200).json({success: true,message: "Mail sent successfully",user:{
+    return res.status(200).json({success: true,message: "Mail sent successfully",user:{
         ...user._doc,
         password: undefined
     },
@@ -86,7 +86,7 @@ const login = async (req,res)=>{
     try{
         const user = await User.findOne({email});
     if(!user){
-        res.status(400).json({success:false, message: "User not found"})
+        return res.status(400).json({success:false, message: "User not found"})
     }
     const passwordCheck = await bcrypt.compare(password,user.password); 
     if(!passwordCheck){
@@ -97,7 +97,7 @@ const login = async (req,res)=>{
 
     user.lastLogin = Date();
     await user.save();
-    res.status(200).json({success: true, message: "Success Login", user: {
+    return res.status(200).json({success: true, message: "Success Login", user: {
         ...user._doc,
         password: undefined,
     }})
@@ -110,7 +110,7 @@ const login = async (req,res)=>{
 
 const logout = async (req,res)=>{
     res.clearCookie("token");
-    res.status(200).json({success: true,message: "successfully logged out"})
+   return res.status(200).json({success: true,message: "successfully logged out"})
 }
 
 // Reset and Forgot Password
@@ -122,7 +122,7 @@ const forgotPassword = async (req,res)=>{
         const user = await User.findOne({email});
 
         if(!user){
-            res.status(400).json({success: false, message: "User not found"})
+           return res.status(400).json({success: false, message: "User not found"})
         }
 
         // Generating Token for Reset password
@@ -135,7 +135,7 @@ const forgotPassword = async (req,res)=>{
 
         await sendPasswordResetEmail(email,`${getBaseUrl()}/auth/api/reset-password/${resetToken}`);
 
-        res.status(200).json({success: true, message: "password reset link sent to your email"})
+        return res.status(200).json({success: true, message: "password reset link sent to your email", resetToken})
 
     } catch (error) {
         console.error("Invalid or expired reset token",error)
@@ -159,13 +159,13 @@ const resetPassword = async (req,res)=>{
         user.resetPasswordExpiresAt = undefined;
         user.resetPasswordToken = undefined;
         user.save();
-        res.status(200).json({success:true,message:"Password changed successfully",user:{
+        return res.status(200).json({success:true,message:"Password changed successfully",user:{
             ...user._doc,
             password: undefined
         }})
     } catch (error) {
         console.error("There was an error resetting password",error);
-        res.status(400).json({success: false, message: error.message})
+        return res.status(400).json({success: false, message: error.message})
     }
 }
 
@@ -176,7 +176,7 @@ const checkAuth = async(req,res)=>{
         res.status(200).json({success:true,user})
     } catch (error) {
         console.log("Error in checkAuth",error);
-        res.status(400).json({success: false, message: error.message});
+        return res.status(400).json({success: false, message: error.message});
     }
 }
 
