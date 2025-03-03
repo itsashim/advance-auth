@@ -15,7 +15,8 @@ export const sendVerificationCode = async (email,verificationCode)=>{
     html: VERIFICATION_EMAIL_TEMPLATE.replace("{verificationCode}",verificationCode),
     category: "Email Verification",
   })
-  .then(console.log, console.error);
+  .then(console.log(recipients), console.error);
+
 }
 
 export const sendWelcomeEmail = async (email)=>{
@@ -47,7 +48,7 @@ export const sendPasswordResetEmail = async (email,resetUrl)=>{
         to: recipients,
         subject: "Reset Password",
         html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}",resetUrl),
-        category: "Email Verification",
+        category: "Reset Password",
       })
       .then(console.log, console.error);
 }

@@ -3,17 +3,32 @@ import {motion} from "framer-motion";
 import Input from "../components/Input";
 import {Lock, Mail, User} from "lucide-react"
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
+import { useSignupMutation } from "../redux/features/authApi";
 
 function SignUpPage() {
     const [name,setName] = useState("");
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
+    const [errors,setErrors] = useState("")
+    const navigate = useNavigate()
+    const [signup] = useSignupMutation();
 
-    const handleSignUp = (e)=>{
-        e.preventDefault();
-    }
+    const handleSignUp = async (e) => {
+      e.preventDefault();
+      const newUser = { name, email, password };
+      const result = await signup(newUser);
+    
+      if (result.error) {
+        setErrors(result.error.data.error);
+        return; 
+      }
+      
+      console.log(result.data);
+      navigate("/verify-email");
+    };
+
     return (
         <motion.div
         initial={{opacity:0,y:20}}
@@ -49,6 +64,8 @@ function SignUpPage() {
                     value={password}
                     onChange={(e)=> setPassword(e.target.value)}
                     />
+
+                    {errors && <p className="text-red-500 font-bold">{errors}</p> }
 
                     {/* Password strength meter */}
                     <PasswordStrengthMeter password={password}/>

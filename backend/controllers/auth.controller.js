@@ -38,10 +38,10 @@ const signup = async (req,res)=>{
         })
         await user.save();
 
-        // Generating JWT token for client validation and storing in cookie
+        // Generating JWT token for client validation and storing in cookie for user management
         generateTokenAndSetCookie(res,user._id);
 
-        await sendVerificationCode(email,verificationCode)
+        await sendVerificationCode(user.email,verificationCode)
 
         res.status(201).json({success: "true",message: "User created Successfully" , user: {
             ...user._doc, //spreading user 
@@ -55,6 +55,7 @@ const signup = async (req,res)=>{
 
 const verifyEmail = async (req,res)=> {
     const {code} = req.body;
+    console.log(code,typeof(code));
 
     const user = await User.findOne({
         verificationToken: code,
@@ -91,6 +92,7 @@ const login = async (req,res)=>{
     if(!passwordCheck){
         return res.status(401).json({success: false, message: "Invalid password"});
     }
+    // Generating cookie for User management
     generateTokenAndSetCookie(res,user._id);
 
     user.lastLogin = Date();
@@ -171,7 +173,7 @@ const checkAuth = async(req,res)=>{
     try {
         const user = await User.findById(req.userId).select("-password"); // .select("-password") selects password and removes from User table 
         if(!user) return res.status(400).json({success: false, message: "User not found"});
-        res.status(200).json({success: true,user})
+        res.status(200).json({success:true,user})
     } catch (error) {
         console.log("Error in checkAuth",error);
         res.status(400).json({success: false, message: error.message});

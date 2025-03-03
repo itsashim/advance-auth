@@ -1,12 +1,17 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { useVerifyEmailMutation } from "../redux/features/authApi";
+import { useNavigate } from "react-router-dom";
 
 
 const EmailVerificationPage = () => {
 	const [code, setCode] = useState(["", "", "", "", "", ""]);
 	const inputRefs = useRef([]);
-    const isLoading = false;
+	const [errors,setErrors] = useState("")
+	const navigate = useNavigate()
+
+	const [verifyEmail,{isLoading}] = useVerifyEmailMutation();
 
 
 	const handleChange = (index, value) => {
@@ -44,7 +49,16 @@ const EmailVerificationPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const verificationCode = code.join("");
-        console.log(verificationCode)
+        console.log(typeof(verificationCode))
+		const result = await verifyEmail({code:verificationCode});
+		    
+		if (result.error) {
+			setErrors(result.error.data.message);
+			return; 
+		  }
+
+		console.log(result.data);
+		navigate("/");
 	};
 
 	// Auto submit when all fields are filled
@@ -82,6 +96,7 @@ const EmailVerificationPage = () => {
 							/>
 						))}
 					</div>
+					{errors && <p className="text-red-500">{errors}</p>}
 					<motion.button
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
