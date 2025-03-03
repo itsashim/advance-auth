@@ -18,6 +18,17 @@ const authApi = createApi({
       }),
       invalidatesTags: ["User"]
     }),
+    login: builder.mutation({
+      query: (logUser) => ({
+        url: "/login",
+        method: 'POST',
+        body: logUser,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+      invalidatesTags: ["User"]
+    }),
     verifyEmail: builder.mutation({
       query: (verificationCode) => ({
         url:"/verify-email",
@@ -33,5 +44,5 @@ const authApi = createApi({
   }),
 });
 
-export const { useSignupMutation, useVerifyEmailMutation,useGetUserQuery} = authApi;
+export const { useSignupMutation, useVerifyEmailMutation,useLoginMutation,useGetUserQuery} = authApi;
 export default authApi;

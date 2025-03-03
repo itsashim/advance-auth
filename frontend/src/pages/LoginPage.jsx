@@ -2,17 +2,31 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Mail, Lock, Loader } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
+import { useLoginMutation } from "../redux/features/authApi";
+
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-    const isLoading = false;
-
+	const [errors,setErrors] = useState("");
+	const [login,{isLoading}] = useLoginMutation()
+	const navigate = useNavigate()
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
+		const logUser = {
+			email,
+			password
+		}
+		const result = await login(logUser);
+
+		if (result.error) {
+			setErrors(result.error.data.error);
+			return; 
+		}
+		navigate("/");
 	};
 
 	return (
@@ -43,6 +57,7 @@ const LoginPage = () => {
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 					/>
+					{errors && <p className="text-red-700">{errors}</p>}
 
 					<div className='flex items-center mb-6'>
 						<Link to='/forgot-password' className='text-sm text-green-400 hover:underline'>
