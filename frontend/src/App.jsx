@@ -9,6 +9,8 @@ import RedirectIfLogin from "./components/RedirectIfLogin"
 import LoginPage from "./pages/LoginPage"
 import { useGetUserQuery } from "./redux/features/authApi"
 import LoadingSpinner from "./components/LoadingSpinner"
+import ForgotPassworPage from "./pages/ForgotPassworPage"
+import ResetPasswordPage from "./pages/ResetPasswordPage"
 
 
 
@@ -26,6 +28,8 @@ function App() {
           <Route path="/signup" element={<RedirectIfLogin><SignUpPage/></RedirectIfLogin>}/>
           <Route path="/login" element={<RedirectIfLogin><LoginPage/></RedirectIfLogin>}/>
           <Route path="/verify-email" element={<EmailVerification/>}/>
+          <Route path="/forgot-password" element={<ForgotPassworPage/>}/>
+          <Route path="/reset-password/:token" element={<ResetPasswordPage/>}/>
         </Routes>
       </div>
     

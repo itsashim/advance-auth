@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import {motion} from "framer-motion";
 import { useGetUserQuery, useLogoutMutation } from "../redux/features/authApi"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Dashboard() {
     const {data}=useGetUserQuery();
@@ -33,7 +33,10 @@ function Dashboard() {
                         >
                         Logout
                     </motion.button>
-                    </form>
+                    <Link className='mt-6 block text-center w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white 
+                        font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700
+                        focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900' to="/forgot-password">Forgot password</Link>
+                </form>
 			</motion.div>
 
         </div>

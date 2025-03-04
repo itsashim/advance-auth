@@ -47,6 +47,24 @@ const authApi = createApi({
       }),
       invalidatesTags: ["User"]
     }),
+    sendResetPasswordLink: builder.mutation({
+      query: (email)=>({
+        url: "/forgot-password",
+        method: "POST",
+        body: email,
+      })
+    }),
+    resetPassword: builder.mutation({
+      query: ({password,token})=>({
+        url: `/reset-password/${token}`,
+        method: "POST",
+        body: {password},
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+      invalidatesTags: ["User"]
+    }),
     getUser: builder.query({
       query: () => "/check-auth",
       providesTags: ["User"],
@@ -54,5 +72,5 @@ const authApi = createApi({
   }),
 });
 
-export const { useSignupMutation, useLogoutMutation,useVerifyEmailMutation,useLoginMutation,useGetUserQuery} = authApi;
+export const { useSignupMutation, useResetPasswordMutation,useSendResetPasswordLinkMutation,useLogoutMutation,useVerifyEmailMutation,useLoginMutation,useGetUserQuery} = authApi;
 export default authApi;
